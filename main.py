@@ -43,17 +43,21 @@ class Item:
         if self.rect.left <= 0:
             self.speed = random.choice(([1, 1], [1, -1]))
 
+
 class Stone(Item):
     def __init__(self):
         super().__init__(COLLOR_WHITE)
+
 
 class Scissors(Item):
     def __init__(self):
         super().__init__(COLLOR_BLUE)
 
+
 class Paper(Item):
     def __init__(self):
         super().__init__(COLLOR_GREEN)
+
 
 class Button:
     def __init__(self, x, y, width, height, text, color, text_color):
@@ -96,6 +100,21 @@ scissorses = []
 papers = []
 playing = True
 game_start = False
+
+
+def draw_text(text, x, y, color=COLLOR_WHITE, font_size=20):
+    font = pygame.font.Font(None, font_size)
+    text_surface = font.render(text, True, color)
+    main_display.blit(text_surface, (x, y))
+
+
+def draw_centered_text(text, color=COLLOR_WHITE, font_size=72):
+    font = pygame.font.Font(None, font_size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect(center=(WIDHT // 2, HEIGHT // 2))
+    main_display.blit(text_surface, text_rect)
+
+
 while playing:
     FPS.tick(600)
 
@@ -113,6 +132,9 @@ while playing:
             if play_button.is_clicked(mouse_pos):
                 game_start = True
     main_display.fill(COLLOR_BLACK)
+    draw_text(f'Stones: {len(stones)}', 20, 20, COLLOR_WHITE)
+    draw_text(f'Scissors: {len(scissorses)}', 20, 60, COLLOR_BLUE)
+    draw_text(f'Papers: {len(papers)}', 20, 100, COLLOR_GREEN)
 
     for stone in stones[:]:
         for paper in papers[:]:
@@ -147,4 +169,11 @@ while playing:
     add_paper_button.draw(main_display)
     add_scissors_button.draw(main_display)
     play_button.draw(main_display)
+    if len(stones) > 0 and len(scissorses) == 0 and len(papers) == 0:
+        draw_centered_text('STONE WINS!!!', COLLOR_WHITE)
+    elif len(scissorses) > 0 and len(stones) == 0 and len(papers) == 0:
+        draw_centered_text('SCISSORS WINS!!!', COLLOR_BLUE)
+    elif len(papers) > 0 and len(stones) == 0 and len(scissorses) == 0:
+        draw_centered_text('PAPER WINS!!!', COLLOR_GREEN)
+
     pygame.display.flip()
