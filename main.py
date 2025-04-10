@@ -10,10 +10,10 @@ FPS = pygame.time.Clock()
 HEIGHT = 800
 WIDHT = 1200
 
-COLLOR_WHITE = (225, 225, 225)
-COLLOR_BLACK = (0, 0, 0)
-COLLOR_BLUE = (0, 0, 255)
-COLLOR_GREEN = (0, 255, 0)
+COLOR_WHITE = (225, 225, 225)
+COLOR_BLACK = (0, 0, 0)
+COLOR_BLUE = (0, 0, 255)
+COLOR_GREEN = (0, 255, 0)
 BUTTON_COLOR = (100, 100, 255)
 
 SIZE = (30, 30)
@@ -46,17 +46,17 @@ class Item:
 
 class Stone(Item):
     def __init__(self):
-        super().__init__(COLLOR_WHITE)
+        super().__init__(COLOR_WHITE)
 
 
 class Scissors(Item):
     def __init__(self):
-        super().__init__(COLLOR_BLUE)
+        super().__init__(COLOR_BLUE)
 
 
 class Paper(Item):
     def __init__(self):
-        super().__init__(COLLOR_GREEN)
+        super().__init__(COLOR_GREEN)
 
 
 class Button:
@@ -88,13 +88,16 @@ def check_collision(obj1, obj2):
 
 
 add_stone_button = Button(WIDHT - BUTTON_SIZE[0] - 10, HEIGHT - BUTTON_SIZE[1] - 10, BUTTON_SIZE[0], BUTTON_SIZE[1],
-                          'ADD STONE', BUTTON_COLOR, COLLOR_BLACK)
+                          'ADD STONE', BUTTON_COLOR, COLOR_BLACK)
 add_paper_button = Button(WIDHT - BUTTON_SIZE[0] - 10, HEIGHT - BUTTON_SIZE[1] - 70, BUTTON_SIZE[0], BUTTON_SIZE[1],
-                          'ADD PAPER', BUTTON_COLOR, COLLOR_BLACK)
+                          'ADD PAPER', BUTTON_COLOR, COLOR_BLACK)
 add_scissors_button = Button(WIDHT - BUTTON_SIZE[0] - 10, HEIGHT - BUTTON_SIZE[1] - 140, BUTTON_SIZE[0], BUTTON_SIZE[1],
-                             'ADD SCISSORS', BUTTON_COLOR, COLLOR_BLACK)
-play_button = Button(WIDHT - BUTTON_SIZE[0] - 10, HEIGHT - BUTTON_SIZE[1] - 210, BUTTON_SIZE[0], BUTTON_SIZE[1], 'PLAY',
-                     BUTTON_COLOR, COLLOR_BLACK)
+                             'ADD SCISSORS', BUTTON_COLOR, COLOR_BLACK)
+play_button = Button(WIDHT - BUTTON_SIZE[0] - 10, HEIGHT - BUTTON_SIZE[1] - 210, BUTTON_SIZE[0], BUTTON_SIZE[1],
+                     'PLAY', BUTTON_COLOR, COLOR_BLACK)
+reset_button = Button(WIDHT - BUTTON_SIZE[0] - 10, HEIGHT - BUTTON_SIZE[1] - 280, BUTTON_SIZE[0], BUTTON_SIZE[1],
+                     'RESET', BUTTON_COLOR, COLOR_BLACK)
+
 stones = []
 scissorses = []
 papers = []
@@ -102,13 +105,13 @@ playing = True
 game_start = False
 
 
-def draw_text(text, x, y, color=COLLOR_WHITE, font_size=20):
+def draw_text(text, x, y, color=COLOR_WHITE, font_size=20):
     font = pygame.font.Font(None, font_size)
     text_surface = font.render(text, True, color)
     main_display.blit(text_surface, (x, y))
 
 
-def draw_centered_text(text, color=COLLOR_WHITE, font_size=72):
+def draw_centered_text(text, color=COLOR_WHITE, font_size=72):
     font = pygame.font.Font(None, font_size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect(center=(WIDHT // 2, HEIGHT // 2))
@@ -131,10 +134,16 @@ while playing:
                 scissorses.append(Scissors())
             if play_button.is_clicked(mouse_pos):
                 game_start = True
-    main_display.fill(COLLOR_BLACK)
-    draw_text(f'Stones: {len(stones)}', 20, 20, COLLOR_WHITE)
-    draw_text(f'Scissors: {len(scissorses)}', 20, 60, COLLOR_BLUE)
-    draw_text(f'Papers: {len(papers)}', 20, 100, COLLOR_GREEN)
+            if reset_button.is_clicked(mouse_pos):
+                stones.clear()
+                scissorses.clear()
+                papers.clear()
+                game_start = False
+
+    main_display.fill(COLOR_BLACK)
+    draw_text(f'Stones: {len(stones)}', 20, 20, COLOR_WHITE)
+    draw_text(f'Scissors: {len(scissorses)}', 20, 60, COLOR_BLUE)
+    draw_text(f'Papers: {len(papers)}', 20, 100, COLOR_GREEN)
 
     for stone in stones[:]:
         for paper in papers[:]:
@@ -169,11 +178,12 @@ while playing:
     add_paper_button.draw(main_display)
     add_scissors_button.draw(main_display)
     play_button.draw(main_display)
+    reset_button.draw(main_display)
     if len(stones) > 0 and len(scissorses) == 0 and len(papers) == 0:
-        draw_centered_text('STONE WINS!!!', COLLOR_WHITE)
+        draw_centered_text('STONE WINS!!!', COLOR_WHITE)
     elif len(scissorses) > 0 and len(stones) == 0 and len(papers) == 0:
-        draw_centered_text('SCISSORS WINS!!!', COLLOR_BLUE)
+        draw_centered_text('SCISSORS WINS!!!', COLOR_BLUE)
     elif len(papers) > 0 and len(stones) == 0 and len(scissorses) == 0:
-        draw_centered_text('PAPER WINS!!!', COLLOR_GREEN)
+        draw_centered_text('PAPER WINS!!!', COLOR_GREEN)
 
     pygame.display.flip()
